@@ -1,18 +1,24 @@
 # ECE-GY-9163-ML-for-Security-Project
 
-## 0.Requirements
+## 0.Team members
 
-1.Your repaired networks G1...GN. The repaired networks take as input a YouTube Face image and outputs N+1 classes, where the N+1 class represents a backdoored inputs. The GoodNets can implement arbitrary Python code.
+We are a group of 3, members are as follow:
 
-2.A 2-page project report describing your code.
+***Xinhao, LI***(xl3413)       xl3413@nyu.edu
 
-3.A GitHub repo. With any/all code you have produced in this project along with a Readme that tells us how to run your code and your project report  
+***Yanbing, YANG***(yy3476)       yy3476@nyu.edu
 
-
+***Zhe, ZHANG***(zz3230)       zz3230@nyu.edu
 
 ## 1.Background
 
-​	可以有一些文献调研，或者复制ppd的一些东西
+In lab3, we have tried to prune channels in a max_pooling layer. However, this method does not work well.
+
+In our project, we tried to do more pruning job. We believe that the backdoor in the model hide in the neurons which they are inactive when clean data is used. After doing some research, we found a way to prune the whole net, which is removing the individual weight connections from a network by setting them to 0. In this way, the connections will become no-operation in the network. This way of pruning is widely used in model compression, and it is also very useful in the problem we are facing.
+
+In our code, we first set our sparsity to 50% and then increase to %70. In the end, 70% of the neurons will be disabled, which will slightly effect the model accuracy. However, we can prevent the attack.
+
+Pruning is the process of removing weight connections in a network to increase inference speed and decrease model storage size. In general, neural networks are very over parameterized. Pruning a network basically means the defender finding and the backdoor neurons and eliminating the unused parameters. Because the neurons activated by the backdoor data are only activated by the backdoor, and they are dormant under the clean data, we record the average activation of each neuron. Then, the defender iteratively trims the neurons of the DNN in an increasing order of average activation, and records the trimming accuracy.
 
 
 
