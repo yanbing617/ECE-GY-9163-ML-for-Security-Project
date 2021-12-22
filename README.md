@@ -1,6 +1,6 @@
 # ECE-GY-9163-ML-for-Security-Project
 
-## 0.Team members
+## 0.Group members
 
 We are a group of 3, members are as follow:
 
@@ -104,20 +104,20 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 #### b. Accuracy(test) and Success Rate(poisoned)
 
-| BadNet           | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
-| ---------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
-| sunglasses       | Content Cell       | Content Cell       | Content Cell           |                        |
-| multiple_trigger | Content Cell       | Content Cell       | Content Cell           |                        |
-| anonymous_1      | Content Cell       | Content Cell       | Content Cell           |                        |
-| annoymous_2      | Content Cell       | Content Cell       | Content Cell           |                        |
+| BadNet               | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
+| -------------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
+| sunglasses           | Content Cell       | Content Cell       | Content Cell           |                        |
+| multiple(eyebrows)   | Content Cell       | Content Cell       | Content Cell           |                        |
+| multiple(lipsticks)  | Content Cell       | Content Cell       | Content Cell           |                        |
+| multiple(sunglasses) | Content Cell       | Content Cell       | Content Cell           |                        |
+| anonymous_1          |                    |                    |                        |                        |
+| annoymous_2          |                    |                    |                        |                        |
 
 As we can see, the attack success rate(ASR) has a **sharp drop** after implementing the fine-pruning method, mean while the drop of accuracy is acceptable
 
  
 
 #### c. Misclassification and Defense Failure  
-
-show 一些图片
 
 
 
