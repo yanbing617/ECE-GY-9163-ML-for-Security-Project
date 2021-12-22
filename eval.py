@@ -1,5 +1,3 @@
-import json
-
 import keras
 import sys
 import h5py
@@ -7,16 +5,16 @@ import numpy as np
 import tensorflow_model_optimization as tfmot
 
 clean_data_filename = "./data/clean_test_data.h5"
-poisoned_data_filename = "./data/sunglasses_poisoned_data.h5"
-bd_model_filename = "./models/sunglasses_bd_net.h5"
-rp_model_filename = "./models/pruned_model.h5"
+poisoned_data_filename = str(sys.argv[1])
+bd_model_filename = str(sys.argv[2])
+rp_model_filename = bd_model_filename.split('.')[0] + '_rp.h5'
 
 def data_loader(filepath):
     data = h5py.File(filepath, 'r')
     x_data = np.array(data['data'])
     y_data = np.array(data['label'])
     x_data = x_data.transpose((0,2,3,1))
-    return x_data, y_data
+    return x_data / 255.0, y_data
 
 
 class RepairModel:
@@ -38,13 +36,12 @@ class RepairModel:
 
 
 def main():
-    Prune_low_magnitude = tfmot.sparsity.keras.prune_low_magnitude
     cl_x_test, cl_y_test = data_loader(clean_data_filename)
     bd_x_test, bd_y_test = data_loader(poisoned_data_filename)
 
     bd_model = keras.models.load_model(bd_model_filename)
     rp_model = keras.models.load_model(rp_model_filename)
-#, custom_objects={"PruneLowMagnitude":Prune_low_magnitude}
+
     class_cnt = bd_model.output.shape[1]
 
     good_net = RepairModel(bd_model, rp_model, class_cnt)
