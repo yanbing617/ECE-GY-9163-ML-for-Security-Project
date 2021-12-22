@@ -31,7 +31,7 @@ input, it must:
 
 ## 2.Fine Pruning Method
 
-#### a. Main Idea
+### a. Main Idea
 
 Pruning is the process of removing weight connections in a network to increase inference speed and decrease model storage size. In general, neural networks are very over parameterized. Pruning a network means the defender finding and the backdoor neurons and eliminating the unused parameters. However, we simply use Fine-tuning or prune defense to not be very effective. Because the neurons activated by the backdoor data are only activated by the backdoor, and they are dormant under the clean data, so we record the average activation of each neuron. Then, the defense prunes the neurons in the order of average activation.
 
@@ -41,7 +41,7 @@ We improve based on prune defense and use fine-tune to improve accuracy. When we
 
 2. After trimming, use clean input to fine-tune the weights on the neurons. Because the backdoor neurons overlap with our normal neurons, we can use clean input to fine-tune our neurons and change their weights to control the weight of our backdoor control.
 
-#### b. Implementation
+### b. Implementation
 
 In our code, we have tried to prune channels in a max_pooling layer. However, this method does not work well.
 
