@@ -66,13 +66,14 @@ In our code, we first set our sparsity to 50% and then increase to %70. In the e
     └── XXX_bd_net_rp.h5 // pruned network generated from './prune.py'
 └── prune.py  // generate a pruned network saved as './models/XXX_bd_net_rp.h5'
 └── eval.py  // create a repaired network and eval the acc and atk on specific poisoned data
-└── README.md  // Lab instruction and report
+└── README.md  // project instruction and report
+└── Project_Report.pdf  // project report
 └── model_architecture.png  // Main structure of the backdoored network
 ```
 
 ### ***b. dependencies***
 
-We use ***Anaconda*** environment and ***PyCharm*** to design this repaired network as a detector to defend against ***backdoor attack***, implementing **Fine-Pruning**, relating Python libararies are as follow:
+We use Anaconda environment and PyCharm to design this repaired network as a detector to defend against backdoor attack, implementing Fine-Pruning, relating Python libraries are as follow:
 
       1. Python 3.7.9
       2. Keras 2.3.1
@@ -117,6 +118,7 @@ def prune_model(base_model, initial_sparsity, final_sparsity, end_step, log_dir)
 ```
 
 After pruning, we need to fine-tune the model so that our model can have higher accuracy to clean data.
+
 ```python
 pruned_model.fit(x_train, y_train,
                         batch_size=batch_size, epochs=epochs, validation_split=validation_split,
@@ -126,13 +128,7 @@ pruned_model.fit(x_train, y_train,
 
 ## 5.Result
 
-#### a. Network Parameters after Pruning
-
-961
-
-
-
-#### b. Accuracy(test) and Success Rate(poisoned)
+####  Accuracy(test) and Success Rate(poisoned)
 
 | BadNet               | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
 | -------------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
@@ -142,14 +138,9 @@ pruned_model.fit(x_train, y_train,
 | multiple(sunglasses) | 96.01       | 89.68              | 100           | 98.46                  |
 | anonymous_1          | 97.19       | 90.21              | 91.40           | 4.39                        |
 
-As we can see, the **attack success rate(ASR)** has a **sharp drop** after implementing the fine-pruning method, mean while the drop of the **accuracy** is **acceptable**  
+Generally, the **attack success rate(ASR)** has a **sharp drop** after implementing the fine-pruning method, mean while the drop of the **accuracy** is **acceptable**  
+
 However, our method does not work well in multi-trigger and multi-target situation. We infer that, if a model has multiple backdoors, then the malicious neurons may act normally when clean data comes and act abnormally when backdoor data comes. In this situation, we cannot rule out these malicious neurons. We still need further research.
-
- 
-
-#### c. Misclassification and Defense Failure  
-
-
 
 
 
