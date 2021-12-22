@@ -1,6 +1,12 @@
 # ECE-GY-9163-ML-for-Security-Project
 
-[TOC]
+## 0.Requirements
+
+1.Your repaired networks G1...GN. The repaired networks take as input a YouTube Face image and outputs N+1 classes, where the N+1 class represents a backdoored inputs. The GoodNets can implement arbitrary Python code.
+
+2.A 2-page project report describing your code.
+
+3.A GitHub repo. With any/all code you have produced in this project along with a Readme that tells us how to run your code and your project report  
 
 ## 1.Background
 
@@ -8,9 +14,13 @@
 
 ## 2.Fine Pruning Method
 
-  prune的原理， 可以用 model_print的那个图
+**network structure of defense method**
 
-![model](D:\OneDrive - nyu.edu\_Fall2021\ML_Cyber\Assignment\lab3\CSAW-HackML-2020\lab3\model.png)
+![model](https://github.com/yanbing617/ECE-GY-9163-ML-for-Security-Project/blob/main/model_architecture.png)
+
+We will try to prune neurons in all **Dense layer**
+
+
 
 还有这种玩意.........
 
@@ -20,7 +30,7 @@
 
 ## 3.Dependencies and Data
 
-### ***a.directories***
+### ***a. directories***
 
 ```bash
 ├── data  // Dataset is not uploaded due to poor network condition
@@ -34,10 +44,10 @@
 └── prune.py  // generate a pruned network saved as './models/XXX_bd_net_rp.h5'
 └── eval.py  // create a repaired network and eval the acc and atk on specific poisoned data
 └── README.md  // Lab instruction and report
-└── model.png  // Main structure of the backdoored network
+└── model_architecture.png  // Main structure of the backdoored network
 ```
 
-### ***b.dependencies***
+### ***b. dependencies***
 
 We use ***Anaconda*** environment and ***PyCharm*** to design this repaired network as a detector to defend against ***backdoor attack***, implementing **Fine-Pruning**, relating Python libararies are as follow:
 
@@ -49,7 +59,7 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
       6. TensorFlow-gpu 1.15.2
       7. tensorflow-model-optimization 0.7.0
 
-### ***c.data***
+### ***c. data***
 
       1. Download the validation and test datasets from [here](https://drive.google.com/drive/folders/13o2ybRJ1BkGUvfmQEeZqDo1kskyFywab?usp=sharing) and store them under `data/` directory.
       2. The dataset contains images from YouTube Aligned Face Dataset. We retrieve 1283 individuals each containing 9 images in the validation dataset.
