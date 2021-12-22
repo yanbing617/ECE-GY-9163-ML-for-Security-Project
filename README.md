@@ -10,25 +10,44 @@ We are a group of 3, members are as follow:
 
 ***Zhe, ZHANG***(zz3230)       zz3230@nyu.edu
 
-## 1.Background
-
-In lab3, we have tried to prune channels in a max_pooling layer. However, this method does not work well.
-
-In our project, we tried to do more pruning job. We believe that the backdoor in the model hide in the neurons which they are inactive when clean data is used. After doing some research, we found a way to prune the whole net, which is removing the individual weight connections from a network by setting them to 0. In this way, the connections will become no-operation in the network. This way of pruning is widely used in model compression, and it is also very useful in the problem we are facing.
-
-In our code, we first set our sparsity to 50% and then increase to %70. In the end, 70% of the neurons will be disabled, which will slightly effect the model accuracy. However, we can prevent the attack.
-
-Pruning is the process of removing weight connections in a network to increase inference speed and decrease model storage size. In general, neural networks are very over parameterized. Pruning a network basically means the defender finding and the backdoor neurons and eliminating the unused parameters. Because the neurons activated by the backdoor data are only activated by the backdoor, and they are dormant under the clean data, we record the average activation of each neuron. Then, the defender iteratively trims the neurons of the DNN in an increasing order of average activation, and records the trimming accuracy.
 
 
+## 1.Requirements
+
+The project is to design a **backdoor detector** for BadNets trained on the YouTube Face dataset. Your backdoor detector is given:
+
+1. B, a backdoored neural network classifier with N classes.
+
+2. D valid, a validation dataset of clean, labelled images.
+
+What you must output is G a “repaired” BadNet. G has N+1 classes, and given unseen test
+input, it must:
+
+1. Output the correct class if the test input is clean. The correct class will be in [0,N-1].
+
+2. Output class N if the input is backdoored.  
+
+   
 
 ## 2.Fine Pruning Method
 
-**network structure of defense method**
+#### a. Main Idea
 
-![model](https://github.com/yanbing617/ECE-GY-9163-ML-for-Security-Project/blob/main/model_architecture.png)
+Pruning is the process of removing weight connections in a network to increase inference speed and decrease model storage size. In general, neural networks are very over parameterized. Pruning a network means the defender finding and the backdoor neurons and eliminating the unused parameters. However, we simply use Fine-tuning or prune defense to not be very effective. Because the neurons activated by the backdoor data are only activated by the backdoor, and they are dormant under the clean data, so we record the average activation of each neuron. Then, the defense prunes the neurons in the order of average activation.
 
-We will try to prune neurons in all **Dense layer**
+We improve based on prune defense and use fine-tune to improve accuracy. When we get a model similar to our target model, we can use our validate dataset as input to train the model again to fine-tune the model parameters. This process works as follow:
+
+1. Pruning the model put back by the attacker. (Remove induced neurons)
+
+2. After trimming, use clean input to fine-tune the weights on the neurons. Because the backdoor neurons overlap with our normal neurons, we can use clean input to fine-tune our neurons and change their weights to control the weight of our backdoor control.
+
+#### b. Implementation
+
+In our code, we have tried to prune channels in a max_pooling layer. However, this method does not work well.
+
+In our project, we tried to do more pruning jobs. We believe that the backdoor in the model hides in the neurons which are inactive when clean data is used. After researching, we found a way to prune the whole net, which is removing the individual weight connections from a network by setting them to 0. In this way, the connections will become no-operation in the network. This way of pruning is widely used in model compression, and it is also very useful in the problem we are facing.
+
+In our code, we first set our sparsity to 50% and then increase to %70. In the end, 70% of the neurons will be disabled, which will slightly affect the model accuracy. However, we can prevent the attack.
 
 
 
@@ -98,7 +117,7 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 #### a. Network Parameters after Pruning
 
-![image-20211221013742342](C:\Users\soapi\AppData\Roaming\Typora\typora-user-images\image-20211221013742342.png)
+961
 
 
 
@@ -107,13 +126,13 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 | BadNet               | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
 | -------------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
 | sunglasses           | Content Cell       | Content Cell       | Content Cell           |                        |
-| multiple(eyebrows)   | Content Cell       | Content Cell       | Content Cell           |                        |
-| multiple(lipsticks)  | Content Cell       | Content Cell       | Content Cell           |                        |
-| multiple(sunglasses) | Content Cell       | Content Cell       | Content Cell           |                        |
+| multiple(eyebrows)   | Content Cell       | 89.69              | Content Cell           | 0.55                   |
+| multiple(lipsticks)  | Content Cell       | 89.69              | Content Cell           | 51.30                  |
+| multiple(sunglasses) | Content Cell       | 89.68              | Content Cell           | 98.46                  |
 | anonymous_1          |                    |                    |                        |                        |
 | annoymous_2          |                    |                    |                        |                        |
 
-As we can see, the attack success rate(ASR) has a **sharp drop** after implementing the fine-pruning method, mean while the drop of accuracy is acceptable
+As we can see, the **attack success rate(ASR)** has a **sharp drop** after implementing the fine-pruning method, mean while the drop of the **accuracy** is **acceptable**
 
  
 
