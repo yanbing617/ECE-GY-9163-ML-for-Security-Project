@@ -94,23 +94,34 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 ## 4.Codes and Explanations
 
-加一些说明（示例）
+Here is the prune function. We mainly use PolynomialDecay to get our model from initial_sparsity to final_sparsity (from 50% to 70%). 
 
 ```python
-  def on_train_begin(self, logs=None):
-    # Collect all the prunable layers in the model.
-    self.prunable_layers = pruning_wrapper.collect_prunable_layers(self.model)
-    if not self.prunable_layers:
-      return
-    # If the model is newly created/initialized, set the 'pruning_step' to 0.
-    # If the model is saved and then restored, do nothing.
-    if self.prunable_layers[0].pruning_step == -1:
-      tuples = []
-      for layer in self.prunable_layers:
-        tuples.append((layer.pruning_step, 0))
-      K.batch_set_value(tuples)
+def prune_model(base_model, initial_sparsity, final_sparsity, end_step, log_dir):
+    pruning_params = {
+        'pruning_schedule': tfmot.sparsity.keras.PolynomialDecay(initial_sparsity=initial_sparsity,
+                                                                 final_sparsity=final_sparsity,
+                                                                 begin_step=0,
+                                                                 end_step=end_step)
+    }
+    model_for_pruning = tfmot.sparsity.keras.prune_low_magnitude(base_model, **pruning_params)
+    model_for_pruning.compile(optimizer=base_model.optimizer,
+                              loss=base_model.loss,
+                              metrics=['accuracy'])
+    log_dir = 'log'
+    callbacks = [
+        tfmot.sparsity.keras.UpdatePruningStep(),
+        tfmot.sparsity.keras.PruningSummaries(log_dir=log_dir),
+    ]
+    return model_for_pruning, callbacks
 ```
 
+After pruning, we need to fine-tune the model so that our model can have higher accuracy to clean data.
+```python
+pruned_model.fit(x_train, y_train,
+                        batch_size=batch_size, epochs=epochs, validation_split=validation_split,
+                        callbacks=callbacks)
+```
 
 
 ## 5.Result
@@ -125,14 +136,14 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 | BadNet               | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
 | -------------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
-| sunglasses           | Content Cell       | Content Cell       | Content Cell           |                        |
-| multiple(eyebrows)   | Content Cell       | 89.69              | Content Cell           | 0.55                   |
-| multiple(lipsticks)  | Content Cell       | 89.69              | Content Cell           | 51.30                  |
-| multiple(sunglasses) | Content Cell       | 89.68              | Content Cell           | 98.46                  |
-| anonymous_1          |                    |                    |                        |                        |
-| annoymous_2          |                    |                    |                        |                        |
+| sunglasses           | 97.78       | 81.22       | 99.99           |  3.48                      |
+| multiple(eyebrows)   | 96.01       | 89.69              | 91.35           | 0.55                   |
+| multiple(lipsticks)  | 96.01       | 89.69              | 91.52           | 51.30                  |
+| multiple(sunglasses) | 96.01       | 89.68              | 100           | 98.46                  |
+| anonymous_1          | 97.19       | 90.21              | 91.40           | 4.39                        |
 
-As we can see, the **attack success rate(ASR)** has a **sharp drop** after implementing the fine-pruning method, mean while the drop of the **accuracy** is **acceptable**
+As we can see, the **attack success rate(ASR)** has a **sharp drop** after implementing the fine-pruning method, mean while the drop of the **accuracy** is **acceptable**  
+However, our method does not work well in multi-trigger and multi-target situation. We infer that, if a model has multiple backdoors, then the malicious neurons may act normally when clean data comes and act abnormally when backdoor data comes. In this situation, we cannot rule out these malicious neurons. We still need further research.
 
  
 
@@ -156,13 +167,19 @@ To generate and evaluate the **repaired model**, execute `eval.py` by running:
 python eval.py <poisoned_data_filename> <bad_model_filename>
 ```
 
-*E.g., `python3 eval.py data/clean_validation_data.h5  models/sunglasses_bd_net.h5`. Clean data classification accuracy on the provided validation dataset for sunglasses_bd_net.h5 is 97.87 %.*
+*E.g., `python eval.py data/anonymous_1_poisoned_data.h5 models/anonymous_1_bd_net.h5`.*
 
 
 
 ## 7.Conclusion
+Our method can successfully defend the attacks. It has two advantages:
+- Our method is easy to implement.
+- Our method does not rely on the bad data to train.
 
-***The result is good***
+Although our method can sharply decrease the attack success rate, it has two drawbacks:
+- The accuracy will decrease around 10%, which is not good enough to implement in reality.
+- If the model has the multiple backdoors, some of the attacks cannot be defended.
+
 
 
 
