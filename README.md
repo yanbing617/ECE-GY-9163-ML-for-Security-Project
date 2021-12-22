@@ -8,9 +8,13 @@
 
 3.A GitHub repo. With any/all code you have produced in this project along with a Readme that tells us how to run your code and your project report  
 
+
+
 ## 1.Background
 
 ​	可以有一些文献调研，或者复制ppd的一些东西
+
+
 
 ## 2.Fine Pruning Method
 
@@ -19,12 +23,6 @@
 ![model](https://github.com/yanbing617/ECE-GY-9163-ML-for-Security-Project/blob/main/model_architecture.png)
 
 We will try to prune neurons in all **Dense layer**
-
-
-
-还有这种玩意.........
-
-![](C:\Users\soapi\AppData\Roaming\Typora\typora-user-images\image-20211221013539684.png)
 
 
 
@@ -61,11 +59,13 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 ### ***c. data***
 
-      1. Download the validation and test datasets from [here](https://drive.google.com/drive/folders/13o2ybRJ1BkGUvfmQEeZqDo1kskyFywab?usp=sharing) and store them under `data/` directory.
-      2. The dataset contains images from YouTube Aligned Face Dataset. We retrieve 1283 individuals each containing 9 images in the validation dataset.
-      3. sunglasses_poisoned_data.h5 contains test images with sunglasses trigger that activates the backdoor for sunglasses_bd_net.h5. Similarly, there are other .h5 files with poisoned data that correspond to different BadNets under models directory.
+  1. Download the validation and test datasets from [here](https://drive.google.com/drive/folders/13o2ybRJ1BkGUvfmQEeZqDo1kskyFywab?usp=sharing) and store them under `data/` directory.
 
+  2. The dataset contains images from YouTube Aligned Face Dataset. We retrieve 1283 individuals each containing 9 images in the validation dataset.
 
+  3. sunglasses_poisoned_data.h5 contains test images with sunglasses trigger that activates the backdoor for sunglasses_bd_net.h5. Similarly, there are other .h5 files with poisoned data that correspond to different BadNets under models directory.
+
+     
 
 ## 4.Codes and Explanations
 
@@ -90,27 +90,36 @@ We use ***Anaconda*** environment and ***PyCharm*** to design this repaired netw
 
 ## 5.Result
 
-可以有可视化的图片，类似于
-
-a.预测结果（示例）
-
-对于图片，可以找**攻击成功**和**分类失败**的特别展示， 可以***胡乱分析***一下
-
-![image-20211221011948201](C:\Users\soapi\AppData\Roaming\Typora\typora-user-images\image-20211221011948201.png)
-
-b.表格（acc和atk）
-
-![image-20211221013650888](C:\Users\soapi\AppData\Roaming\Typora\typora-user-images\image-20211221013650888.png)
-
-可以是top-misClassify 或者 top-atk
-
-c.**网络性能展示**（个人认为老师喜欢看这种东西）
+#### a. Network Parameters after Pruning
 
 ![image-20211221013742342](C:\Users\soapi\AppData\Roaming\Typora\typora-user-images\image-20211221013742342.png)
 
-## 5.Running Instruction
 
-To generate and evaluate the **repaired model**, execute `prune.py` by running:
+
+#### b. Accuracy(test) and Success Rate(poisoned)
+
+| BadNet           | Accuracy(original) | Accuracy(repaired) | Success Rate(original) | Success Rate(repaired) |
+| ---------------- | ------------------ | ------------------ | ---------------------- | ---------------------- |
+| sunglasses       | Content Cell       | Content Cell       | Content Cell           |                        |
+| multiple_trigger | Content Cell       | Content Cell       | Content Cell           |                        |
+| anonymous_1      | Content Cell       | Content Cell       | Content Cell           |                        |
+| annoymous_2      | Content Cell       | Content Cell       | Content Cell           |                        |
+
+As we can see, the attack success rate(ASR) has a **sharp drop** after implementing the fine-pruning method, mean while the drop of accuracy is acceptable
+
+ 
+
+#### c. Misclassification and Defense Failure  
+
+show 一些图片
+
+
+
+
+
+## 6.Running Instruction
+
+To train and generate the **pruned model**, execute `prune.py` by running:
 
 ```shell
 python prune.py <bad_model_filename>
@@ -124,13 +133,15 @@ python eval.py <poisoned_data_filename> <bad_model_filename>
 
 *E.g., `python3 eval.py data/clean_validation_data.h5  models/sunglasses_bd_net.h5`. Clean data classification accuracy on the provided validation dataset for sunglasses_bd_net.h5 is 97.87 %.*
 
-## 6.Conclusion
 
-做个总结：结论是还不错
 
-可以展望下其他方法
+## 7.Conclusion
 
-## 7.References
+***The result is good***
+
+
+
+## 8.References
 
 [1] Liu, Kang, Brendan Dolan-Gavitt, and Siddharth Garg. "Fine-pruning: Defending against backdooring attacks on deep neural networks." *International Symposium on Research in Attacks, Intrusions, and Defenses*. Springer, Cham, 2018.
 
